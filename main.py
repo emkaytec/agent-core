@@ -4,20 +4,23 @@ from openai import OpenAI
 
 load_dotenv()
 
-def main():
+poem_prompt = """
+Please write a poem about ChatGPT.
+Ensure that the poem is written in basic English.
+Ensure that the poem is written in a manner that a 4th grader would be able to understand.
+"""
+
+def get_response(prompt: str) -> str:
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-    
-    conversation_history = [
-        {"role": "system", "content": "You are a helpful assistant that can answer questions and help with tasks."},
-        {"role": "user", "content": "What is the capital of France?"}
-    ]
-    
     response = client.chat.completions.create(
         model="gpt-4o-mini",
-        messages=conversation_history
+        messages=[{"role": "user", "content": prompt}]
     )
+    return response.choices[0].message.content
 
-    print(response.choices[0].message.content)
+def main():
+    response = get_response(poem_prompt)
+    print(response)
 
 if __name__ == "__main__":
     main()
